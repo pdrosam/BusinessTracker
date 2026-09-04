@@ -13,6 +13,7 @@ declare module "preact" {
       "mdui-circular-progress": any;
       "mdui-avatar": any;
       "mdui-divider": any;
+      "mdui-checkbox": any;
     }
   }
 }
