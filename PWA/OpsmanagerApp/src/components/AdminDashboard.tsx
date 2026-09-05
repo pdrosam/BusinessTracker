@@ -20,7 +20,6 @@ export default function AdminDashboard({ userName }: Props) {
 
   return (
     <DashboardLayout
-      title="Admin Panel"
       activeTab={activeTab}
       onTabChange={setActiveTab}
       navItems={navItems}

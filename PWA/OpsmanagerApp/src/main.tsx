@@ -3,7 +3,7 @@ import '@material-design-icons/font/filled.css';
 import 'mdui';
 import { setColorScheme } from 'mdui/functions/setColorScheme.js';
 
-setColorScheme('#b59a6e');
+setColorScheme(import.meta.env.VITE_BUSINESS_COLOR_SCHEME || '#1976d2');
 
 import { render } from 'preact';
 import App from './App';

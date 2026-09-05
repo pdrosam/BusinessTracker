@@ -13,7 +13,7 @@ type UserRole = 'merchant' | 'promoter' | 'administrator' | null;
 export default function Dashboard() {
   const [role, setRole] = useState<UserRole>(null);
   const [loading, setLoading] = useState(true);
-  const [firstName, setFirstName] = useState('');
+  const [Name, setName] = useState('');
 
   useEffect(() => {
     async function fetchUserProfile() {
@@ -22,13 +22,13 @@ export default function Dashboard() {
       if (user) {
         const { data, error } = await supabase
           .from('profiles')
-          .select('role, first_name')
+          .select('role, first_name, last_name')
           .eq('id', user.id)
           .single();
 
         if (data && !error) {
           setRole(data.role as UserRole);
-          setFirstName(data.first_name);
+          setName(`${data.first_name} ${data.last_name}`);
         }
       }
       setLoading(false);
@@ -39,16 +39,16 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <main class="center-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <main class="center-container">
         <mdui-circular-progress></mdui-circular-progress>
       </main>
     );
   }
 
   // Render the correct dashboard based on role
-  if (role === 'administrator') return <AdminDashboard userName={firstName} />;
-  if (role === 'merchant') return <MerchantDashboard userName={firstName} />;
-  if (role === 'promoter') return <PromoterDashboard userName={firstName} />;
+  if (role === 'administrator') return <AdminDashboard userName={Name} />;
+  if (role === 'merchant') return <MerchantDashboard userName={Name} />;
+  if (role === 'promoter') return <PromoterDashboard userName={Name} />;
 
   // Fallback if role is unknown or missing
   return <div style={{ padding: '24px' }}>Error: Role not assigned. Contact administrator.</div>;

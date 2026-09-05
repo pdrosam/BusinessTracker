@@ -10,25 +10,23 @@ interface NavItem {
 }
 
 interface Props {
-  title: string;
   activeTab: string;
   onTabChange: (value: string) => void;
   navItems: NavItem[];
   children: ComponentChildren;
 }
 
-export default function DashboardLayout({ title, activeTab, onTabChange, navItems, children }: Props) {
+export default function DashboardLayout({ activeTab, onTabChange, navItems, children }: Props) {
   // Capitalize the first letter of the role
 
   return (
     <main class="contain-container">
       <h1 class="main-title">{import.meta.env.VITE_BUSINESS_NAME}</h1>
       
-      <mdui-card variant="elevated" class="box" style={{ padding: '24px', marginBottom: '80px' }}>
-        <h2 class="main-title">{title}</h2>
+      <mdui-card variant="elevated" class="box">
         
         {/* The active tab's component will be injected right here */}
-        <div style={{ marginTop: '24px' }}>
+        <div>
           {children}
         </div>
       </mdui-card>

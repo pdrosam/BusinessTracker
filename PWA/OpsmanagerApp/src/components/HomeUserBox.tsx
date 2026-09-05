@@ -2,6 +2,7 @@ import { route } from 'preact-router';
 import 'mdui/components/avatar.js';
 import 'mdui/components/badge.js';
 import 'mdui/components/button.js';
+import 'mdui/components/divider.js';
 
 import { supabase } from '../lib/supabase';
 
@@ -25,19 +26,19 @@ export default function HomeUserBox({ userName, role }: Props) {
   };
 
   return (
-    <div class="UserBox" style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+    <div class="user-box">
       <mdui-avatar src="/favicon.svg"></mdui-avatar>
       <p style={{ margin: 0 }}>{userName}</p>
       <mdui-badge>{capitalizedRole}</mdui-badge>
       <mdui-button
         variant="filled"
         icon="logout"
-        style={{ marginLeft: 'auto' }}
         onClick={handleLogout}
         type="button"
       >
         Logout
       </mdui-button>
+      <mdui-divider></mdui-divider>
     </div>
   );
 }

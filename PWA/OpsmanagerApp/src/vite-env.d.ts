@@ -12,6 +12,7 @@ declare module "preact" {
       "mdui-badge": any;
       "mdui-circular-progress": any;
       "mdui-avatar": any;
+      "mdui-divider": any;
     }
   }
 }

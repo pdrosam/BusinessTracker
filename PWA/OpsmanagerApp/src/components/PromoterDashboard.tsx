@@ -23,7 +23,6 @@ export default function PromoterDashboard({ userName }: Props) {
 
   return (
     <DashboardLayout
-      title="Promoter Panel"
       activeTab={activeTab}
       onTabChange={setActiveTab}
       navItems={navItems}
