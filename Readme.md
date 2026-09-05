@@ -1,7 +1,8 @@
 <div align="center">
-<h3>Field Operations Manager Projects</h3>
-<spam>opsmanager</spam>
-<!-- <img src="icon.png" width="100" alt="logo" title="icon"/> -->
+<h3>Business Tracker</h3>
+<img src="src/favicon.svg" width="100" alt="logo" title="icon"/>
+<hr/>
+
 </div>
 
 ---
@@ -27,7 +28,11 @@ Providers (Dev) -> Netlify (WebApp)
 ```
 
 PWA  (PWA, vite)
+DB (sql)
+---
 Test (Unit test)
+Scripts (Automation)
+
 
 ```
 
