@@ -27,11 +27,12 @@ Providers (Dev) -> Netlify (WebApp)
 
 ```
 
-PWA  (PWA, vite)
-DB (sql)
+PWA/  (PWA, vite)
+DB/ (sql)
+src/ (assets)
 ---
-Test (Unit test)
-Scripts (Automation)
+Test/ (Unit test)
+Scripts/ (Automation)
 
 
 ```
