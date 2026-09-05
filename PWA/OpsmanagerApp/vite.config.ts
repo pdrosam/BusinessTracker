@@ -13,6 +13,9 @@ export default defineConfig(async ({ mode }) => {
       preact(),
       VitePWA({
         registerType: 'autoUpdate',
+        workbox: {
+          globPatterns: ['**/*.{js,css,html,png,svg,woff2}'],
+        },
         manifest: {
           name: env.VITE_BUSINESS_APP_NAME,
           short_name: env.VITE_BUSINESS_APP_NAME_SHORT,
