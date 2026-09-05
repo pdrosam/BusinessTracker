@@ -22,22 +22,22 @@ export default defineConfig(async ({ mode }) => {
           lang: env.VITE_BUSINESS_MAIN_LANGUAGE,
           icons: [
             {
-              src: env.VITE_BUSINESS_FAVICON,
+              src: '/favicon.svg',
               sizes: 'any',
               type: 'image/svg+xml',
-              purpose: 'any maskable'
+              purpose: 'any'
             },
             {
               src: '/favicon-192.png',
               sizes: '192x192',
               type: 'image/png',
-              purpose: 'any maskable'
+              purpose: 'any'
             },
             {
               src: '/favicon-512.png',
               sizes: '512x512',
               type: 'image/png',
-              purpose: 'any maskable'
+              purpose: 'any'
             }
           ]
         }
