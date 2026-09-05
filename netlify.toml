@@ -1,13 +1,13 @@
 [build]
   base = "PWA/OpsmanagerApp"
   publish = "dist"
-  command = "mkdir -p public && cp ../../src/favicon.svg public/favicon.svg && pnpm run build"
+  command = "pnpm run icons --only-pwa && pnpm run build"
 
 [context.deploy-preview]
-  command = "mkdir -p public && cp ../../src/favicon.svg public/favicon.svg && pnpm run build"
+  command = "pnpm run icons --only-pwa && pnpm run build"
 
 [context.branch-deploy]
-  command = "mkdir -p public && cp ../../src/favicon.svg public/favicon.svg && pnpm run build"
+  command = "pnpm run icons --only-pwa && pnpm run build"
 
 [[redirects]]
   from = "/*"
