@@ -24,7 +24,7 @@ export default function AdminDashboard({ userName }: Props) {
       onTabChange={setActiveTab}
       navItems={navItems}
     >
-      {activeTab === 'home' && <AdminHome userName={userName} role="administrator" />}
+      {activeTab === 'home' && <AdminHome userName={userName} role="administrator" onTabChange={setActiveTab} />}
       {activeTab === 'reports' && <AdminReports />}
       {activeTab === 'users' && <AdminUsers />}
     </DashboardLayout>
