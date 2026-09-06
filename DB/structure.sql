@@ -1,11 +1,9 @@
--- 1. Safely create the ENUM type if it doesn't exist
 DO $$ BEGIN
     CREATE TYPE public.user_role AS ENUM ('merchant', 'promoter', 'administrator');
 EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;
 
--- 2. Create tables using IF NOT EXISTS
 CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
   first_name TEXT NOT NULL,
@@ -77,7 +75,6 @@ CREATE TABLE IF NOT EXISTS public.promoter_report_details (
   PRIMARY KEY (report_id, product_id)
 );
 
--- 3. Security Definer function to check admin status without infinite recursion
 CREATE OR REPLACE FUNCTION public.is_admin()
 RETURNS BOOLEAN AS $$
 DECLARE
@@ -91,23 +88,19 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
--- 4. Apply RLS and Administrator Policies
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
--- Clean up old policies to allow easy updates when running the script multiple times
 DROP POLICY IF EXISTS "Users can view their own profile" ON public.profiles;
 DROP POLICY IF EXISTS "Administrators can view all profiles" ON public.profiles;
 DROP POLICY IF EXISTS "Administrators can insert profiles" ON public.profiles;
 DROP POLICY IF EXISTS "Administrators can update profiles" ON public.profiles;
 DROP POLICY IF EXISTS "Administrators can delete profiles" ON public.profiles;
 
--- Base policy: Users can see their own data
 CREATE POLICY "Users can view their own profile"
   ON public.profiles FOR SELECT
   TO authenticated
   USING ( auth.uid() = id );
 
--- Admin Policies: Full CRUD access
 CREATE POLICY "Administrators can view all profiles"
   ON public.profiles FOR SELECT
   TO authenticated
@@ -129,7 +122,6 @@ CREATE POLICY "Administrators can delete profiles"
   TO authenticated
   USING ( public.is_admin() );
 
--- 5. Triggers and User Handling Functions
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 BEGIN
@@ -144,14 +136,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Drop trigger if exists to ensure idempotency, then recreate
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
 
--- Enable the extension required to generate random passwords if needed
+-- hash password function
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE OR REPLACE FUNCTION public.create_user_by_admin(
@@ -170,7 +161,6 @@ DECLARE
     hashed_password TEXT;
     result json;
 BEGIN
-    -- 1. Security Check: Ensure caller is an administrator
     IF NOT public.is_admin() THEN
       RAISE EXCEPTION 'Access Denied: Only administrators can create users.';
     END IF;
@@ -178,7 +168,6 @@ BEGIN
     -- Hash the password using pgcrypto
     hashed_password := crypt(password_input, gen_salt('bf'));
 
-    -- 2. Insert into auth.users
     INSERT INTO auth.users (
         id,
         instance_id,
@@ -232,7 +221,7 @@ BEGIN
         updated_at
     ) VALUES (
         gen_random_uuid(),   -- Unique ID for the identity record
-        new_user_id::text,   -- REQUIRED: maps to the user ID for email auth
+        new_user_id::text,   -- maps to the user ID for email auth
         new_user_id,
         json_build_object('sub', new_user_id::text, 'email', email_input),
         'email',
@@ -241,7 +230,6 @@ BEGIN
         NOW()
     );
 
-    -- 4. Update the public.profiles role (Trigger already created the row)
     UPDATE public.profiles 
     SET role = user_role 
     WHERE id = new_user_id;
