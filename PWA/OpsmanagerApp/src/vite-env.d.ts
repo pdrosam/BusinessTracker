@@ -13,6 +13,8 @@ declare module "preact" {
       "mdui-circular-progress": any;
       "mdui-avatar": any;
       "mdui-divider": any;
+      "mdui-select": any;
+      "mdui-menu-item": any;
     }
   }
 }

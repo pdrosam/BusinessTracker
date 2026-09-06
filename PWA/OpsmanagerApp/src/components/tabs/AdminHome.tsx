@@ -8,14 +8,17 @@ interface Props {
 
 export default function AdminHome({ userName, role }: Props) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+    <div class="home-box">
       <HomeUserBox userName={userName} role={role} />
       <mdui-button variant="filled" icon="dashboard">
-        Vista General
+        Assign Tasks
       </mdui-button>
-      <p style={{ fontSize: '14px', color: 'gray' }}>
-        Revisa métricas, clientes y operaciones del sistema.
-      </p>
+      <mdui-button variant="outlined" icon="analytics">
+        View Reports
+      </mdui-button>
+      <mdui-button variant="outlined" icon="manage_accounts">
+        Manage Users
+      </mdui-button>
     </div>
   );
 }
