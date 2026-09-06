@@ -16,9 +16,9 @@ export default function PromoterDashboard({ userName }: Props) {
 
   // Define the navigation items for this specific role
   const navItems = [
-    { value: 'home', icon: 'home', label: 'Inicio' },
-    { value: 'sales', icon: 'receipt_long', label: 'Mis Ventas' },
-    { value: 'zones', icon: 'place', label: 'Zonas' }
+    { value: 'home', icon: 'home', label: 'Home' },
+    { value: 'sales', icon: 'receipt_long', label: 'Sales' },
+    { value: 'zones', icon: 'place', label: 'Zones' }
   ];
 
   return (
