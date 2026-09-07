@@ -51,7 +51,8 @@ CREATE TABLE IF NOT EXISTS public.promoter_reports (
   id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   submitted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   state_id INTEGER REFERENCES public.states(id),
-  promoter_id UUID REFERENCES public.profiles(id),
+  salesman_name TEXT NOT NULL,
+  promoter_id UUID NOT NULL REFERENCES public.profiles(id),
   zone TEXT NOT NULL,
   stablishment TEXT NOT NULL,
   client_id UUID REFERENCES public.clients(id)
@@ -88,40 +89,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
-ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "Users can view their own profile" ON public.profiles;
-DROP POLICY IF EXISTS "Administrators can view all profiles" ON public.profiles;
-DROP POLICY IF EXISTS "Administrators can insert profiles" ON public.profiles;
-DROP POLICY IF EXISTS "Administrators can update profiles" ON public.profiles;
-DROP POLICY IF EXISTS "Administrators can delete profiles" ON public.profiles;
-
-CREATE POLICY "Users can view their own profile"
-  ON public.profiles FOR SELECT
-  TO authenticated
-  USING ( auth.uid() = id );
-
-CREATE POLICY "Administrators can view all profiles"
-  ON public.profiles FOR SELECT
-  TO authenticated
-  USING ( public.is_admin() );
-
-CREATE POLICY "Administrators can insert profiles"
-  ON public.profiles FOR INSERT
-  TO authenticated
-  WITH CHECK ( public.is_admin() );
-
-CREATE POLICY "Administrators can update profiles"
-  ON public.profiles FOR UPDATE
-  TO authenticated
-  USING ( public.is_admin() )
-  WITH CHECK ( public.is_admin() );
-
-CREATE POLICY "Administrators can delete profiles"
-  ON public.profiles FOR DELETE
-  TO authenticated
-  USING ( public.is_admin() );
-
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 BEGIN
@@ -130,19 +97,117 @@ BEGIN
     new.id, 
     COALESCE(new.raw_user_meta_data->>'first_name', 'Unknown'),
     COALESCE(new.raw_user_meta_data->>'last_name', 'Unknown'),
-    'promoter'
+    CAST(COALESCE(new.raw_user_meta_data->>'role', 'promoter') AS public.user_role)
   );
   RETURN new;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
 
--- hash password function
+-- ==============================================
+-- 3. ROW LEVEL SECURITY (RLS)
+-- ==============================================
+
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.states ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.clients ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.clients_states ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.merchant_reports ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.promoter_reports ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.merchant_report_details ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.promoter_report_details ENABLE ROW LEVEL SECURITY;
+
+-- --------------------------------------------------------
+-- PROFILES POLICIES
+-- --------------------------------------------------------
+DROP POLICY IF EXISTS "select_own_profile" ON public.profiles;
+DROP POLICY IF EXISTS "Administrators can view all profiles" ON public.profiles;
+DROP POLICY IF EXISTS "Administrators can insert profiles" ON public.profiles;
+DROP POLICY IF EXISTS "Administrators can update profiles" ON public.profiles;
+DROP POLICY IF EXISTS "Administrators can delete profiles" ON public.profiles;
+
+CREATE POLICY "select_own_profile" ON public.profiles FOR SELECT TO authenticated USING ( auth.uid() = id );
+CREATE POLICY "Administrators can view all profiles" ON public.profiles FOR SELECT TO authenticated USING ( public.is_admin() );
+CREATE POLICY "Administrators can insert profiles" ON public.profiles FOR INSERT TO authenticated WITH CHECK ( public.is_admin() );
+CREATE POLICY "Administrators can update profiles" ON public.profiles FOR UPDATE TO authenticated USING ( public.is_admin() ) WITH CHECK ( public.is_admin() );
+CREATE POLICY "Administrators can delete profiles" ON public.profiles FOR DELETE TO authenticated USING ( public.is_admin() );
+
+-- --------------------------------------------------------
+-- CATALOG POLICIES (Read-only for authenticated)
+-- --------------------------------------------------------
+DROP POLICY IF EXISTS "select_states" ON public.states;
+DROP POLICY IF EXISTS "select_clients" ON public.clients;
+DROP POLICY IF EXISTS "select_clients_states" ON public.clients_states;
+DROP POLICY IF EXISTS "select_products" ON public.products;
+
+CREATE POLICY "select_states" ON public.states FOR SELECT TO authenticated USING (true);
+CREATE POLICY "select_clients" ON public.clients FOR SELECT TO authenticated USING (true);
+CREATE POLICY "select_clients_states" ON public.clients_states FOR SELECT TO authenticated USING (true);
+CREATE POLICY "select_products" ON public.products FOR SELECT TO authenticated USING (true);
+
+-- --------------------------------------------------------
+-- MERCHANT REPORTS POLICIES
+-- --------------------------------------------------------
+DROP POLICY IF EXISTS "insert_own_merchant_report" ON public.merchant_reports;
+DROP POLICY IF EXISTS "select_own_merchant_report" ON public.merchant_reports;
+DROP POLICY IF EXISTS "insert_own_merchant_report_details" ON public.merchant_report_details;
+DROP POLICY IF EXISTS "select_own_merchant_report_details" ON public.merchant_report_details;
+
+CREATE POLICY "insert_own_merchant_report"
+ON public.merchant_reports FOR INSERT TO authenticated
+WITH CHECK (
+  merchant_id = auth.uid()
+  AND EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'merchant' AND is_active = true)
+);
+
+CREATE POLICY "select_own_merchant_report"
+ON public.merchant_reports FOR SELECT TO authenticated
+USING (merchant_id = auth.uid() OR public.is_admin());
+
+CREATE POLICY "insert_own_merchant_report_details"
+ON public.merchant_report_details FOR INSERT TO authenticated
+WITH CHECK (report_id IN (SELECT id FROM public.merchant_reports WHERE merchant_id = auth.uid()));
+
+CREATE POLICY "select_own_merchant_report_details"
+ON public.merchant_report_details FOR SELECT TO authenticated
+USING (report_id IN (SELECT id FROM public.merchant_reports WHERE merchant_id = auth.uid()) OR public.is_admin());
+
+-- --------------------------------------------------------
+-- PROMOTER REPORTS POLICIES
+-- --------------------------------------------------------
+DROP POLICY IF EXISTS "insert_own_promoter_report" ON public.promoter_reports;
+DROP POLICY IF EXISTS "select_own_promoter_report" ON public.promoter_reports;
+DROP POLICY IF EXISTS "insert_own_promoter_report_details" ON public.promoter_report_details;
+DROP POLICY IF EXISTS "select_own_promoter_report_details" ON public.promoter_report_details;
+
+CREATE POLICY "insert_own_promoter_report"
+ON public.promoter_reports FOR INSERT TO authenticated
+WITH CHECK (
+  promoter_id = auth.uid()
+  AND EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'promoter' AND is_active = true)
+);
+
+CREATE POLICY "select_own_promoter_report"
+ON public.promoter_reports FOR SELECT TO authenticated
+USING (promoter_id = auth.uid() OR public.is_admin());
+
+CREATE POLICY "insert_own_promoter_report_details"
+ON public.promoter_report_details FOR INSERT TO authenticated
+WITH CHECK (report_id IN (SELECT id FROM public.promoter_reports WHERE promoter_id = auth.uid()));
+
+CREATE POLICY "select_own_promoter_report_details"
+ON public.promoter_report_details FOR SELECT TO authenticated
+USING (report_id IN (SELECT id FROM public.promoter_reports WHERE promoter_id = auth.uid()) OR public.is_admin());
+
+-- ==============================================
+-- 4. RPC ADMIN USER CREATION
+-- ==============================================
+
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE OR REPLACE FUNCTION public.create_user_by_admin(
@@ -195,7 +260,7 @@ BEGIN
         '',
         '',
         '{"provider":"email","providers":["email"]}',
-        json_build_object('first_name', first_name, 'last_name', last_name, 'email_verified', true),
+        json_build_object('first_name', first_name, 'last_name', last_name, 'role', user_role::text, 'email_verified', true),
         'authenticated',
         'authenticated',
         NOW(),
@@ -209,7 +274,7 @@ BEGIN
         email_change_token_new = COALESCE(email_change_token_new, '')
     WHERE id = new_user_id;
 
-    -- 3. Insert into auth.identities (FIXED: Added id and provider_id)
+    -- Insert into auth.identities
     INSERT INTO auth.identities (
         id,
         provider_id, 
@@ -220,8 +285,8 @@ BEGIN
         created_at,
         updated_at
     ) VALUES (
-        gen_random_uuid(),   -- Unique ID for the identity record
-        new_user_id::text,   -- maps to the user ID for email auth
+        gen_random_uuid(),   
+        new_user_id::text,   
         new_user_id,
         json_build_object('sub', new_user_id::text, 'email', email_input),
         'email',
