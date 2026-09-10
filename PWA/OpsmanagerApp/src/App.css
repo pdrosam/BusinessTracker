@@ -233,6 +233,7 @@ form .error-message {
   align-items: center;
   justify-content: space-between;
   margin: 0.5em 0;
+  gap: 1em;
 }
 
 .inventory-product mdui-text-field {
