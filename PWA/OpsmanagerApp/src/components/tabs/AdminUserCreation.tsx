@@ -49,18 +49,17 @@ export default function AdminUserCreation({ onCreated }: { onCreated?: (msg: Fee
 
   return (
     <div class="creation-root">
-      <h3 style={{ marginBottom: '16px' }}>Add New User</h3>
+      <h3>Add New User</h3>
       
-      <form onSubmit={handleCreateUser} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <form onSubmit={handleCreateUser}>
         
-        <div style={{ display: 'flex', gap: '16px' }}>
+        <div>
           <mdui-text-field 
             label="First Name" 
             variant="outlined" 
             value={firstName} 
             onInput={(e: any) => setFirstName(e.target.value)} 
             required 
-            style={{ flex: 1 }}
           />
           <mdui-text-field 
             label="Last Name" 
@@ -68,7 +67,6 @@ export default function AdminUserCreation({ onCreated }: { onCreated?: (msg: Fee
             value={lastName} 
             onInput={(e: any) => setLastName(e.target.value)} 
             required 
-            style={{ flex: 1 }}
           />
         </div>
 

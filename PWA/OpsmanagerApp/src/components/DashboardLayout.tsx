@@ -26,9 +26,7 @@ export default function DashboardLayout({ activeTab, onTabChange, navItems, chil
       <mdui-card variant="elevated" class="box">
         
         {/* The active tab's component will be injected right here */}
-        <div>
           {children}
-        </div>
       </mdui-card>
 
       {/* Bottom Navigation */}

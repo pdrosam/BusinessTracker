@@ -82,7 +82,7 @@ form .error-message {
   grid-template-rows: auto auto;
   align-items: center;
   column-gap: 0.75em;
-  row-gap: 0.2em;
+  /* row-gap: 0.2em; */
   width: 100%;
   min-width: 300px;
   max-width: 90vw;
@@ -120,18 +120,37 @@ form .error-message {
   margin: 1em 0;
 }
 
+.user-box div mdui-button-icon {
+  margin: .25em;
+}
+
+.user-list .user-box {
+  margin-block: .25em;
+  padding:.75em;
+  width: 90vw;
+  max-width: 400px;
+}
+
+.user-list .user-box:hover {
+  background-color: rgb(var(--mdui-color-surface-bright));
+  border-radius: var(--mdui-shape-corner-medium);
+  /* cursor:pointer; */
+}
+
 .home-box {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  width: 100%;
+  /* width: 100%; */
 }
 
 .list-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2em;
+  margin-bottom: 1em;
+  width: 90vw;
+  max-width: 400px;
 }
 
 .dialog-panel {
@@ -144,15 +163,23 @@ form .error-message {
   position: fixed;
   left: 0;
   top: 0;
-  z-index: 1000;
+  z-index: 2001;
   display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: center;
+  overflow:scroll;
+
 }
 
 .creation-root {
   max-width: 500px;
+}
+
+.creation-root form>div {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
 }
 
 .feedback-message {
@@ -170,4 +197,51 @@ form .error-message {
 .feedback-message.success {
   background-color: rgb(var(--mdui-color-primary-container));
   color: rgb(var(--mdui-color-on-primary-container));
+}
+
+.info-message {
+  padding-block:1em;
+  color: rgb(var(--mdui-color-on-surface-variant));
+}
+
+.inventory-section {
+  display: flex;
+  flex-wrap: wrap;
+  /* max-width: 100vw; */
+  /* flex-direction: row; */
+}
+
+.inventory-section .info-message {
+  flex: 1;
+}
+
+.inventory-section h4 {
+  flex: 1 100%;
+  margin: 1em 0 0.5em;
+  text-align: center;
+}
+
+.inventory-grid {
+  display:flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.inventory-product {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0.5em 0;
+}
+
+.inventory-product mdui-text-field {
+  width: 100px;
+}
+
+.inventory-inputs {
+  display: flex;
+  gap: 1em;
+  align-items: center;
+  justify-content: end;
 }
