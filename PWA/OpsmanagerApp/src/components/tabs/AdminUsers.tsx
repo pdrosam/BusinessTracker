@@ -7,6 +7,7 @@ import 'mdui/components/button-icon.js';
 import 'mdui/components/divider.js';
 
 import AdminUserCreation from './AdminUserCreation';
+import AdminUserEdit from './AdminUserEdit';
 import { supabase } from '../../lib/supabase';
 
 interface UserItem {
@@ -21,6 +22,7 @@ export default function AdminUsers() {
   const [users, setUsers] = useState<UserItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
+  const [editingUser, setEditingUser] = useState<UserItem | null>(null);
   const [createFeedbackMsg, setCreateFeedbackMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const reloadUsers = async () => {
@@ -69,6 +71,21 @@ export default function AdminUsers() {
             </div>
         ) : null}
 
+        {editingUser ? (
+          <div class="dialog-panel">
+            <mdui-button variant="outlined" onClick={() => setEditingUser(null)}>Back to list</mdui-button>
+            <AdminUserEdit
+              user={editingUser}
+              onUpdated={(msg) => {
+                setCreateFeedbackMsg(msg);
+                setEditingUser(null);
+                reloadUsers();
+              }}
+              onClose={() => setEditingUser(null)}
+            />
+          </div>
+        ) : null}
+
       {createFeedbackMsg && (
         <div class={`feedback-message ${createFeedbackMsg.type === 'error' ? 'error' : 'success'}`}>{createFeedbackMsg.text}</div>
       )}
@@ -85,7 +102,7 @@ export default function AdminUsers() {
             </div>
 
             <div>
-              <mdui-button-icon icon="edit" variant="outlined" onClick={() => console.log('Edit', u.id)}></mdui-button-icon>
+              <mdui-button-icon icon="edit" variant="outlined" onClick={() => setEditingUser(u)}></mdui-button-icon>
               <mdui-button-icon icon="settings" variant="filled" onClick={() => console.log('Manage', u.id)}></mdui-button-icon>
             </div>
           </div>
