@@ -15,6 +15,8 @@ declare module "preact" {
       "mdui-divider": any;
       "mdui-select": any;
       "mdui-menu-item": any;
+      "mdui-list": any;
+      "mdui-list-item": any;
     }
   }
 }
