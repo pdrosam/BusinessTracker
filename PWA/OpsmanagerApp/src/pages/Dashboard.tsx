@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'preact/hooks';
+import { route } from "preact-router";
 import "../App.css";
 import "mdui/components/circular-progress.js";
 import { supabase } from '../lib/supabase';
@@ -18,7 +19,7 @@ export default function Dashboard() {
   useEffect(() => {
     async function fetchUserProfile() {
       const { data: { user } } = await supabase.auth.getUser();
-      
+
       if (user) {
         const { data, error } = await supabase
           .from('profiles')
@@ -33,7 +34,7 @@ export default function Dashboard() {
       }
       setLoading(false);
     }
-    
+
     fetchUserProfile();
   }, []);
 
@@ -51,5 +52,10 @@ export default function Dashboard() {
   if (role === 'promoter') return <PromoterDashboard userName={Name} />;
 
   // Fallback if role is unknown or missing
-  return <div style={{ padding: '24px' }}>Error: Role not assigned. Contact administrator.</div>;
+  return <div style={{ padding: '24px' }}>
+    <p>Error: Role not assigned. Contact administrator.</p>
+    <mdui-button icon="chevron_right" variant="outlined" onClick={() => route("/login")}>
+      Go to Login
+    </mdui-button>
+  </div>;
 }
