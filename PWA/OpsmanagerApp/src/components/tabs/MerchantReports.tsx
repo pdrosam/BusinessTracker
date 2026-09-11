@@ -101,7 +101,11 @@ export default function MerchantReports() {
               <div>
                 <div>{report.stablishment}</div>
                 <div>
-                  {new Date(report.submitted_at).toLocaleDateString()} • {report.zone} • {report.salesman_name}
+                  {new Date(report.submitted_at).toLocaleDateString()} • {new Date(report.submitted_at).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true,
+                  })} • {report.zone} • {report.salesman_name}
                 </div>
                 <mdui-badge>{report.clients?.name || 'Unknown Client'}</mdui-badge>
               </div>

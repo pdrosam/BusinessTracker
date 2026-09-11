@@ -124,7 +124,11 @@ export default function AdminReports() {
             <div>
               <div>{employeeName}</div>
               <div>
-                {new Date(report.submitted_at).toLocaleDateString()} • {report.role.charAt(0).toUpperCase() + report.role.slice(1)}
+                {new Date(report.submitted_at).toLocaleDateString()} • {new Date(report.submitted_at).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: true,
+                })} • {report.role.charAt(0).toUpperCase() + report.role.slice(1)}
               </div>
               <mdui-badge>{report.clients?.name || 'Unknown Client'}</mdui-badge>
             </div>
