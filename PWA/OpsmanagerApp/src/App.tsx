@@ -24,7 +24,11 @@ function App() {
       .then(({ data: { session } }) => {
         if (!active) return;
 
-        if (!session && window.location.pathname !== '/login' && window.location.pathname !== '/') {
+        if (session) {
+          if (window.location.pathname !== '/dashboard') {
+            route('/dashboard', true);
+          }
+        } else if (window.location.pathname !== '/login' && window.location.pathname !== '/') {
           route('/login', true); // Replace history state so they can't hit "Back"
         }
 
@@ -36,7 +40,11 @@ function App() {
 
     // Listen for authentication state changes (e.g., token expires, or user logs out)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!session && window.location.pathname !== '/login' && window.location.pathname !== '/') {
+      if (session) {
+        if (window.location.pathname !== '/dashboard') {
+          route('/dashboard', true);
+        }
+      } else if (window.location.pathname !== '/login' && window.location.pathname !== '/') {
         route('/login', true);
       }
     });

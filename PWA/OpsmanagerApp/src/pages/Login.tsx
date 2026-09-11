@@ -1,5 +1,5 @@
 import { route } from "preact-router";
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import "../App.css";
 import "mdui/components/card.js";
 import "mdui/components/text-field.js";
@@ -10,6 +10,19 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+
+  useEffect(() => {
+    let active = true;
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!active || !session) return;
+      route('/dashboard', true);
+    });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const handleLogin = async (e: Event) => {
     e.preventDefault();
