@@ -75,3 +75,7 @@ Scripts/ (Automation)
     - db (ui/ux) Physical design, cost per usage estimate etc
     - tauri (app) working apk, desktop app [maybe]
     - docs (manual) basic user manual (maybe build it in the app) [maybe]
+
+## Known Issues
+
+- Report/users loading must be on groups (to avoid load big databases)
