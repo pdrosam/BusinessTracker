@@ -103,7 +103,7 @@ export default function AdminUsers() {
 
             <div>
               <mdui-button-icon icon="edit" variant="outlined" onClick={() => setEditingUser(u)}></mdui-button-icon>
-              <mdui-button-icon icon="settings" variant="filled" onClick={() => console.log('Manage', u.id)}></mdui-button-icon>
+              {/* <mdui-button-icon icon="settings" variant="filled" onClick={() => console.log('Manage', u.id)}></mdui-button-icon> */}
             </div>
           </div>
         ))}
