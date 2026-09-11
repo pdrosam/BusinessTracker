@@ -12,9 +12,9 @@ export default function MerchantHome({ userName, role, onTabChange }: Props) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       <HomeUserBox userName={userName} role={role} />
       <mdui-button variant="filled" icon="point_of_sale" onClick={() => onTabChange?.('reports')}>
-        Nuevo Reporte de Ventas
+        New Report
       </mdui-button>
-      <p style={{ fontSize: '14px', color: 'gray' }}>Registra inventario inicial y final.</p>
+      <p style={{ fontSize: '14px', color: 'gray' }}>Register inventory reports</p>
     </div>
   );
 }
