@@ -28,7 +28,7 @@ export default function PromoterDashboard({ userName }: Props) {
       navItems={navItems}
     >
       {/* Conditional Rendering: Only show the component that matches activeTab */}
-      {activeTab === 'home' && <PromoterHome userName={userName} role="promoter" />}
+      {activeTab === 'home' && <PromoterHome userName={userName} role="promoter" onTabChange={setActiveTab}/>}
       {activeTab === 'sales' && <PromoterSales />}
       {activeTab === 'zones' && <PromoterZones />}
     </DashboardLayout>

@@ -27,7 +27,7 @@ export default function MerchantDashboard({ userName }: Props) {
       navItems={navItems}
     >
       {/* Conditional Rendering: Only show the component that matches activeTab */}
-      {activeTab === 'home' && <MerchantHome userName={userName} role="merchant" />}
+      {activeTab === 'home' && <MerchantHome userName={userName} role="merchant" onTabChange={setActiveTab} />}
       {activeTab === 'reports' && <MerchantReports />}
       {activeTab === 'establishments' && <MerchantEstablishments />}
     </DashboardLayout>
