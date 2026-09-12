@@ -150,6 +150,38 @@ CREATE POLICY "select_clients" ON public.clients FOR SELECT TO authenticated USI
 CREATE POLICY "select_clients_states" ON public.clients_states FOR SELECT TO authenticated USING (true);
 CREATE POLICY "select_products" ON public.products FOR SELECT TO authenticated USING (true);
 
+-- Admin write access for clients
+DROP POLICY IF EXISTS "admin_insert_clients" ON public.clients;
+DROP POLICY IF EXISTS "admin_update_clients" ON public.clients;
+DROP POLICY IF EXISTS "admin_delete_clients" ON public.clients;
+CREATE POLICY "admin_insert_clients" ON public.clients FOR INSERT TO authenticated WITH CHECK ( public.is_admin() );
+CREATE POLICY "admin_update_clients" ON public.clients FOR UPDATE TO authenticated USING ( public.is_admin() ) WITH CHECK ( public.is_admin() );
+CREATE POLICY "admin_delete_clients" ON public.clients FOR DELETE TO authenticated USING ( public.is_admin() );
+
+-- Admin write access for products
+DROP POLICY IF EXISTS "admin_insert_products" ON public.products;
+DROP POLICY IF EXISTS "admin_update_products" ON public.products;
+DROP POLICY IF EXISTS "admin_delete_products" ON public.products;
+CREATE POLICY "admin_insert_products" ON public.products FOR INSERT TO authenticated WITH CHECK ( public.is_admin() );
+CREATE POLICY "admin_update_products" ON public.products FOR UPDATE TO authenticated USING ( public.is_admin() ) WITH CHECK ( public.is_admin() );
+CREATE POLICY "admin_delete_products" ON public.products FOR DELETE TO authenticated USING ( public.is_admin() );
+
+-- Admin write access for states
+DROP POLICY IF EXISTS "admin_insert_states" ON public.states;
+DROP POLICY IF EXISTS "admin_update_states" ON public.states;
+DROP POLICY IF EXISTS "admin_delete_states" ON public.states;
+CREATE POLICY "admin_insert_states" ON public.states FOR INSERT TO authenticated WITH CHECK ( public.is_admin() );
+CREATE POLICY "admin_update_states" ON public.states FOR UPDATE TO authenticated USING ( public.is_admin() ) WITH CHECK ( public.is_admin() );
+CREATE POLICY "admin_delete_states" ON public.states FOR DELETE TO authenticated USING ( public.is_admin() );
+
+-- Admin write access for clients_states
+DROP POLICY IF EXISTS "admin_insert_clients_states" ON public.clients_states;
+DROP POLICY IF EXISTS "admin_update_clients_states" ON public.clients_states;
+DROP POLICY IF EXISTS "admin_delete_clients_states" ON public.clients_states;
+CREATE POLICY "admin_insert_clients_states" ON public.clients_states FOR INSERT TO authenticated WITH CHECK ( public.is_admin() );
+CREATE POLICY "admin_update_clients_states" ON public.clients_states FOR UPDATE TO authenticated USING ( public.is_admin() ) WITH CHECK ( public.is_admin() );
+CREATE POLICY "admin_delete_clients_states" ON public.clients_states FOR DELETE TO authenticated USING ( public.is_admin() );
+
 -- --------------------------------------------------------
 -- MERCHANT REPORTS POLICIES
 -- --------------------------------------------------------
