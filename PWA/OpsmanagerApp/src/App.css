@@ -91,6 +91,9 @@ form .error-message {
   grid-column: 1;
   grid-row: 1 / span 2;
   justify-self: start;
+}
+
+.user-box>*:first-child {
   margin-left: 0.5em;
 }
 
@@ -145,7 +148,7 @@ form .error-message {
 
 .list-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   margin-bottom: 1em;
   width: min(90vw, 400px);
@@ -371,4 +374,15 @@ form .error-message {
 
 .highlight-text {
   color: rgb(var(--mdui-color-primary));
+}
+
+.items-box {
+  display:flex;
+  /* flex-direction: column; */
+  flex-wrap:wrap;
+  justify-content: center;
+}
+
+.items-box h4 {
+  flex:1;
 }

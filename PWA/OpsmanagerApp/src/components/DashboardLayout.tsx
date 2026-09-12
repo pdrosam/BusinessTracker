@@ -57,7 +57,7 @@ export default function DashboardLayout({ activeTab, onTabChange, navItems, chil
 
       {/* Bottom Navigation */}
       {/* Listens to the MDUI 'change' event to update the parent's state */}
-      <mdui-navigation-bar value={activeTab} onChange={handleNavChange}>
+      <mdui-navigation-bar value={activeTab} onChange={handleNavChange} label-visibility="labeled">
         {navItems.map((item) => (
           <mdui-navigation-bar-item key={item.value} value={item.value} icon={item.icon}>
             {item.label}
