@@ -120,7 +120,7 @@ export default function AdminClients() {
               <div>{c.name}</div>
               <div>{c.rif}</div>
               <div>
-                <mdui-badge>{productCounts[c.id] ?? 0}</mdui-badge>
+                <span class="status-highlight">Products: {productCounts[c.id] ?? 0}</span>
               </div>
             </div>
 
