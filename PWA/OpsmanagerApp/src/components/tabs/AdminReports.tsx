@@ -19,7 +19,7 @@ interface ReportItem {
   stablishment: string;
   clients: { name: string } | null;
   states: { name: string } | null;
-  profiles?: { first_name: string; last_name: string } | null;
+  profiles?: { first_name: string; last_name: string; is_active?: boolean | null } | null;
 }
 
 export default function AdminReports() {
@@ -43,7 +43,7 @@ export default function AdminReports() {
             merchant_id,
             clients ( name ),
             states ( name ),
-            profiles:profiles!merchant_reports_merchant_id_fkey ( first_name, last_name )
+            profiles:profiles!merchant_reports_merchant_id_fkey ( first_name, last_name, is_active )
           `)
           .order('submitted_at', { ascending: false }),
         supabase
@@ -57,7 +57,7 @@ export default function AdminReports() {
             promoter_id,
             clients ( name ),
             states ( name ),
-            profiles:profiles!promoter_reports_promoter_id_fkey ( first_name, last_name )
+            profiles:profiles!promoter_reports_promoter_id_fkey ( first_name, last_name, is_active )
           `)
           .order('submitted_at', { ascending: false })
       ]);
@@ -116,13 +116,17 @@ export default function AdminReports() {
           const employeeName = report.profiles
             ? `${report.profiles.first_name} ${report.profiles.last_name}`.trim()
             : report.salesman_name;
+          const isEmployeeActive = report.profiles ? Boolean(report.profiles.is_active) : true;
 
           return (
           <div class="user-box" key={`${report.role}-${report.id}`}>
             <mdui-avatar icon="receipt_long"></mdui-avatar>
 
             <div>
-              <div>{employeeName}</div>
+              <div class="report-employee-row">
+                <span>{employeeName}</span>
+                {!isEmployeeActive && <span class="status-highlight">No Active</span>}
+              </div>
               <div>
                 {new Date(report.submitted_at).toLocaleDateString()} • {new Date(report.submitted_at).toLocaleTimeString([], {
                   hour: '2-digit',

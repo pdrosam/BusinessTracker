@@ -42,7 +42,7 @@ export default function PromoterReportView({ reportId, onClose, isAdmin = false 
             promoter_id,
             clients ( id, name ),
             states ( id, name ),
-            profiles:profiles!promoter_reports_promoter_id_fkey ( id, first_name, last_name ),
+            profiles:profiles!promoter_reports_promoter_id_fkey ( id, first_name, last_name, is_active ),
             promoter_report_details (
               product_id,
               initial_inventory,
@@ -136,7 +136,10 @@ export default function PromoterReportView({ reportId, onClose, isAdmin = false 
               {isAdmin && (
                 <div class="meta-row highlight-text">
                   <span class="meta-label">Employee</span>
-                  <span class="meta-value">{report.profiles ? `${report.profiles.first_name} ${report.profiles.last_name}`.trim() : report.salesman_name}</span>
+                  <span class="meta-value employee-name-with-status">
+                    <span>{report.profiles ? `${report.profiles.first_name} ${report.profiles.last_name}`.trim() : report.salesman_name}</span>
+                    {report.profiles && report.profiles.is_active === false && <span class="status-highlight"> No Active</span>}
+                  </span>
                 </div>
               )}
               <div class="meta-row">

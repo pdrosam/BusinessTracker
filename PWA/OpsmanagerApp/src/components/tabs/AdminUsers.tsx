@@ -94,11 +94,12 @@ export default function AdminUsers() {
 
       <div class="user-list">
         {users.map((u) => (
-          <div class="user-box" key={u.id}>
+          <div class={`user-box ${u.is_active ? '' : 'user-innactive'}`} key={u.id}>
             <mdui-avatar src="/favicon.svg"></mdui-avatar>
             <div>
               <div>{u.first_name} {u.last_name}</div>
               <mdui-badge>{u.role.charAt(0).toUpperCase() + u.role.slice(1)}</mdui-badge>
+              <div class="status-highlight">{u.is_active ? 'Active' : 'No Active'}</div>
             </div>
 
             <div>

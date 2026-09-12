@@ -41,7 +41,7 @@ export default function MerchantReportView({ reportId, onClose, isAdmin = false 
             merchant_id,
             clients ( id, name ),
             states ( id, name ),
-            profiles:profiles!merchant_reports_merchant_id_fkey ( id, first_name, last_name ),
+            profiles:profiles!merchant_reports_merchant_id_fkey ( id, first_name, last_name, is_active ),
             merchant_report_details (
               product_id,
               salesfloor_inventory,
@@ -134,7 +134,10 @@ export default function MerchantReportView({ reportId, onClose, isAdmin = false 
                 {isAdmin && (
                 <div class="meta-row highlight-text">
                   <span class="meta-label">Employee</span>
-                  <span class="meta-value">{report.profiles ? `${report.profiles.first_name} ${report.profiles.last_name}`.trim() : report.salesman_name}</span>
+                  <span class="meta-value employee-name-with-status">
+                    <span>{report.profiles ? `${report.profiles.first_name} ${report.profiles.last_name}`.trim() : report.salesman_name}</span>
+                    {report.profiles && report.profiles.is_active === false && <span class="status-highlight">No Active</span>}
+                  </span>
                 </div>
               )}
               <div class="meta-row">
